@@ -1,7 +1,9 @@
 # thesis
 
 Getting Divya's Changes:
-```git pull```
+```
+git pull
+```
 
 Adding any changes:
 ```
