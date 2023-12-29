@@ -1,6 +1,6 @@
 # thesis
 
-Getting Divya's Changes:
+Always run this before you make any new changes:
 ```
 git pull
 ```
