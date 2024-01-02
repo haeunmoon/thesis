@@ -14,7 +14,7 @@ def run(question):
         save_results(question_id=question, datasets=DATASETS)
     else:
         for question in QUESTION_IDS:
-            print(question)
+            save_results(question_id=question, datasets=DATASETS)
 
 if __name__ == "__main__":
     run()
