@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
 import os
+import matplotlib.colors as mcolors
+import matplotlib.pyplot as plt
+import pandas as pd
 from helpers import _load_data, _analyze_question
 
 # Analyze the question across datasets and find the frequency of each response for each question across each year

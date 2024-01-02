@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import click
-from helpers import load_data_files, get_question_ids
 from analyze import save_results
+from helpers import load_data_files, get_question_ids
 
 DATASETS = load_data_files("thesis_data")
 QUESTION_IDS = get_question_ids("question_ids.txt")
@@ -13,7 +13,6 @@ def run(question):
     if question:
         save_results(question_id=question, datasets=DATASETS)
     else:
-        print("No question ID provided")
         for question in QUESTION_IDS:
             print(question)
 
