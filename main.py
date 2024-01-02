@@ -10,6 +10,11 @@ QUESTION_IDS = get_question_ids("question_ids.txt")
 @click.option('--question', default=None, help='Individual question ID to get results for')
 
 def run(question):
+    """
+    Usage:
+    1. To get results for a single question, run the command 'python main.py --question [question_id]
+    2. To get results for all questions at once, run the command 'python main.py'
+    """
     if question:
         save_results(question_id=question, datasets=DATASETS)
     else:
