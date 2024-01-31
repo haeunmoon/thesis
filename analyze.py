@@ -88,6 +88,24 @@ def _plot_distribution(frequency_distribution_dict, question_id):
     
     return plt.gcf()
 
+def _plot_percent_change(percent_change_distribution_table, question_id):
+    # Transpose the dataframe to have years as rows
+    df_transposed = percent_change_distribution_table.T
+
+    # Plotting
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for response in df_transposed.columns:
+        ax.plot(df_transposed.index, df_transposed[response], marker='o', label=response)
+
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Percent Change')
+    ax.set_title(f"Percent Change by Year and Response for {question_id}")
+    ax.legend(title='Response')
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    plt.tight_layout()  # Adjust layout to prevent clipping of label
+    
+    return plt.gcf()
+
 def save_results(question_id, datasets):
     # Create a "results" directory if it doesn't exist for the specific question
     if not os.path.exists("results"):
@@ -128,3 +146,6 @@ def save_results(question_id, datasets):
     plot.savefig(f"{results_path}/{question_id}.png")
     plt.close(plot)
 
+    plot_percent = _plot_percent_change(percent_change_distribution_table, question_id)
+    plot_percent.savefig(f"{results_path}/{question_id}_percent_change.png")
+    plt.close(plot_percent)
