@@ -3,6 +3,7 @@ import os
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from helpers import _load_data, _analyze_question
 
 # Analyze the question across datasets and find the frequency of each response for each question across each year
@@ -32,6 +33,28 @@ def _create_percent_change_distribution_table(frequency_distribution_dict):
     percent_change_distribution_table = pd.DataFrame(frequency_distribution_dict).pct_change(axis='columns').iloc[:, 1:] * 100  
     percent_change_distribution_table = percent_change_distribution_table.round(2)  # Round to 2 decimal places
     return percent_change_distribution_table
+
+def _create_deviation_table(percent_change_distribution_table):
+    percent_abs = percent_change_distribution_table.abs()
+    # Calculating the mean and standard deviation of the absolute value dataframe
+    abs_mean = percent_abs.stack().mean()
+    abs_std_dev = percent_abs.stack().std()
+
+    # Calculating the standard deviations from the mean for each cell in the absolute value dataframe
+    standard_deviation_table = percent_abs.applymap(lambda x: (x - abs_mean) / abs_std_dev if pd.notnull(x) else x)
+    return standard_deviation_table
+
+def _find_outliers(standard_deviation_table):
+    results = []
+    # Iterate through the dataframe
+    for index, row in standard_deviation_table.iterrows():
+        for year, value in row.items():
+            if abs(value) > 2:  # Check if the std deviation is greater than 2
+                results.append((year, index, value))
+
+    # Create a DataFrame from the results
+    results_df = pd.DataFrame(results, columns=['Year', 'Response', 'Standard Deviation'])
+    return results_df
 
 # Plotting
 def _plot_distribution(frequency_distribution_dict, question_id):
@@ -90,6 +113,18 @@ def save_results(question_id, datasets):
     print(percent_change_distribution_table)
     percent_change_distribution_table.to_csv(f"{results_path}/{question_id}_percent_change.csv")
 
+    # Create std table and save
+    standard_deviation_table = _create_deviation_table(percent_change_distribution_table)
+    print(f"Standard deviation of percent changes between responses per year for {question_id}")
+    print(standard_deviation_table)
+    standard_deviation_table.to_csv(f"{results_path}/{question_id}_standard_deviation.csv")
+
+    results_table = _find_outliers(standard_deviation_table)
+    print(f"Outliers in change in response per year for {question_id}")
+    print(results_table)
+    results_table.to_csv(f"{results_path}/{question_id}_results.csv")
+
     plot = _plot_distribution(frequency_distribution_dict, question_id)
     plot.savefig(f"{results_path}/{question_id}.png")
     plt.close(plot)
+
